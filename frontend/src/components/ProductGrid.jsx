@@ -21,6 +21,7 @@ export default function ProductGrid({ products, categories, activeCategory, setA
           <Search className="search-icon" />
           <input
             type="text"
+            aria-label="Search products"
             placeholder="Search products by name, SKU, or barcode..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -80,9 +81,9 @@ export default function ProductGrid({ products, categories, activeCategory, setA
                     <div className="product-card-price-label">Retail Price</div>
                     <div className="product-card-price">₱{(product.price).toFixed(2)}</div>
                   </div>
-                  <div className="product-add-btn">
+                  <button aria-label="Add product" className="product-add-btn">
                     <Plus style={{ width: 16, height: 16 }} />
-                  </div>
+                  </button>
                 </div>
               </div>
             );

@@ -8,6 +8,7 @@ export default function Cart({ cart, customers, selectedCustomer, setSelectedCus
       <div className="cart-customer-bar">
         <User />
         <select
+          aria-label="Select customer"
           value={selectedCustomer || ''}
           onChange={(e) => setSelectedCustomer(e.target.value ? parseInt(e.target.value) : null)}
         >
@@ -39,11 +40,11 @@ export default function Cart({ cart, customers, selectedCustomer, setSelectedCus
 
               {/* Adjust Qty */}
               <div className="cart-item-qty">
-                <button onClick={() => onUpdateQty(item.id, item.quantity - 1)}>
+                <button aria-label="Decrease quantity" onClick={() => onUpdateQty(item.id, item.quantity - 1)}>
                   <Minus style={{ width: 14, height: 14 }} />
                 </button>
                 <span className="cart-item-qty-value">{item.quantity}</span>
-                <button onClick={() => onUpdateQty(item.id, item.quantity + 1)}>
+                <button aria-label="Increase quantity" onClick={() => onUpdateQty(item.id, item.quantity + 1)}>
                   <Plus style={{ width: 14, height: 14 }} />
                 </button>
               </div>
@@ -52,6 +53,7 @@ export default function Cart({ cart, customers, selectedCustomer, setSelectedCus
                 onClick={() => onDeleteItem(item.id)}
                 className="cart-item-remove"
                 title="Remove Item"
+                aria-label="Remove item"
               >
                 <Trash2 style={{ width: 15, height: 15 }} />
               </button>
