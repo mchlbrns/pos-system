@@ -1,17 +1,46 @@
-# Demo Video Script — 3-Minute Presentation
+# 📹 POS Onboarding Video Script
 
-- **0:00 - 0:30 Introduction & Hook**
-  - *Visual*: Cashier terminal desktop loading in a laundry shop.
-  - *Audio*: "Tired of hand-written receipts, missing water containers, or lost labor logs? Today, we present the Universal POS system, designed specifically for small businesses in the Philippines."
+*This is a storyboard script for a 2-minute silent demo video showing the installation, first sale, and printer test.*
 
-- **0:30 - 1:30 Cashier POS in Action**
-  - *Visual*: Ringing up items on the POS screen, switching from GCash to Cash, showing change calculator.
-  - *Audio*: "With our responsive glassmorphism UI, cashiers can search, scan barcodes, adjust quantities, and calculate change instantly—even when the shop is completely offline."
+---
 
-- **1:30 - 2:30 Business Plugin Switching**
-  - *Visual*: Settings page switching type from Water Station to Motorcycle Repair.
-  - *Audio*: "Switch your business mode instantly. In water refilling mode, track container deposits. Switch to motor repair to assign jobs to mechanics and manage spare parts."
+## Part 1: Installation (0:00 - 0:40)
 
-- **2:30 - 3:00 Call to Action & Conclusion**
-  - *Visual*: Outlining thermal receipt layout, showing dashboard graphs.
-  - *Audio*: "Modernize your bookkeeping, prevent inventory leakage, and comply with BIR layout standards. Get started today!"
+- **Visual:** A clean Windows desktop. A cursor hovers over the extracted folder `universal_pos`.
+- **Action:** Cursor double-clicks `install.bat`. A command window opens, showing the quick dependencies checker.
+- **Caption overlay:**
+  > "Double-click **install.bat** to start the setup wizard."
+- **Visual:** The installation finishes with the message `[SUCCESS] Setup is complete!`.
+- **Caption overlay:**
+  > "All done! Press any key to exit setup."
+
+---
+
+## Part 2: Starting the POS (0:40 - 1:10)
+
+- **Visual:** Back in the folder, cursor double-clicks `start.bat`.
+- **Action:** A background window starts, and Chrome opens automatically to `http://localhost:5173`.
+- **Caption overlay:**
+  > "Double-click **start.bat** to launch your shop register."
+
+---
+
+## Part 3: Selecting Business Type & Printer (1:10 - 1:40)
+
+- **Visual:** Cashier dashboard loads. User clicks the **Manager** tab.
+- **Action:** Enters the PIN `1234` and clicks **Verify Code**.
+- **Caption overlay:**
+  > "Enter PIN **1234** to access the settings panel."
+- **Visual:** Click **Printer Setup**. The scan runs and lists "Virtual Printer". User clicks it, then clicks **Save Printer**.
+- **Caption overlay:**
+  > "Select your receipt printer and click **Save Printer**."
+
+---
+
+## Part 4: First Cashier Checkout (1:40 - 2:00)
+
+- **Visual:** Clicks the **Cashier** tab. The product selection panel appears.
+- **Action:** Clicks "Purified Water Refill" twice. The item appears in the cart. Clicks **Collect Payment**, types `50` in the keypad, and clicks **Complete Sale**.
+- **Caption overlay:**
+  > "Add products, collect cash, and complete your first sale!"
+- **Visual:** A checkmark appears with transaction successful toast message.

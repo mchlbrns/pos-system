@@ -1,0 +1,11 @@
+{
+  "name": "motorepair",
+  "unitOfMeasure": "hr",
+  "fields": [
+    "motorcycle_model",
+    "plate_number",
+    "mechanic_name",
+    "service_hours"
+  ],
+  "printTemplate": "========================================\n           {{business_name}}\n          MOTORCYCLE REPAIR HUB\n         {{business_address}}\n========================================\n Transaction #: {{transaction_number}}\n Date: {{date}}\n Cashier: {{cashier_name}}\n----------------------------------------\n{{#items}}\n {{name}}\n                   {{qty}} x {{price}}  {{subtotal}}\n{{/items}}\n----------------------------------------\n Subtotal:                   {{subtotal}}\n VAT (12%):                  {{tax}}\n Discount:                  -{{discount}}\n----------------------------------------\n TOTAL:                ₱ {{total}}\n========================================\n     Safe Riding! Drive Defensively!\n========================================\n"
+}

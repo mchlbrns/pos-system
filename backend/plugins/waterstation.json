@@ -1,0 +1,11 @@
+{
+  "name": "waterstation",
+  "unitOfMeasure": "gal",
+  "fields": [
+    "gallon_type",
+    "container_size",
+    "deposit_amount",
+    "needs_container_return"
+  ],
+  "printTemplate": "========================================\n           {{business_name}}\n          WATER STATION REFILL\n         {{business_address}}\n========================================\n Transaction #: {{transaction_number}}\n Date: {{date}}\n Cashier: {{cashier_name}}\n----------------------------------------\n{{#items}}\n {{name}}\n                   {{qty}} x {{price}}  {{subtotal}}\n{{/items}}\n----------------------------------------\n Subtotal:                   {{subtotal}}\n VAT (12%):                  {{tax}}\n Discount:                  -{{discount}}\n----------------------------------------\n TOTAL:                ₱ {{total}}\n========================================\n      Clean & Purified Every Day!\n========================================\n"
+}

@@ -46,3 +46,8 @@ Thumbs.db
 /playwright-report/
 /test-results/
 /playwright/.cache/
+
+# Packaged distribution zip files
+pos_v2.zip
+*.zip
+

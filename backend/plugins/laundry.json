@@ -1,0 +1,11 @@
+{
+  "name": "laundry",
+  "unitOfMeasure": "kg",
+  "fields": [
+    "weight",
+    "service_type",
+    "is_folded",
+    "detergent_brand"
+  ],
+  "printTemplate": "========================================\n           {{business_name}}\n            LAUNDRY SERVICES\n         {{business_address}}\n========================================\n Transaction #: {{transaction_number}}\n Date: {{date}}\n Cashier: {{cashier_name}}\n----------------------------------------\n{{#items}}\n {{name}}\n                   {{qty}} x {{price}}  {{subtotal}}\n{{/items}}\n----------------------------------------\n Subtotal:                   {{subtotal}}\n VAT (12%):                  {{tax}}\n Discount:                  -{{discount}}\n----------------------------------------\n TOTAL:                ₱ {{total}}\n========================================\n     Fresh & Folded, Ready to Wear!\n========================================\n"
+}
