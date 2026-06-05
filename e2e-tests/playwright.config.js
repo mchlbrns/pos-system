@@ -87,13 +87,13 @@ module.exports = defineConfig({
   /* Web server configuration - start both backend and frontend */
   webServer: [
     {
-      command: 'cd ../server && npm start',
+      command: 'cd ../backend && npm start',
       url: 'http://localhost:3000/',
       reuseExistingServer: !process.env.CI,
       timeout: 30_000,
     },
     {
-      command: 'cd ../client && npm run dev',
+      command: 'cd ../frontend && npm run dev',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
       timeout: 30_000,
