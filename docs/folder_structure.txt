@@ -1,0 +1,361 @@
+pos-system/
+│
+├── docs/                                   # Project documentation
+│   ├── specs.md                            # Product specification & user stories
+│   ├── tech_stack_decision.md              # Technology stack justification
+│   ├── milestones.md                       # Weekly milestones & task breakdown
+│   ├── database_schema.sql                 # Database schema (SQLite)
+│   ├── api_endpoints.md                    # REST API specification
+│   ├── folder_structure.txt                # This file
+│   ├── printer_driver_interface.md         # Printer driver interface specification
+│   ├── admin-guide.md                      # Administrator setup guide
+│   ├── troubleshooting.md                  # Common issues & fixes
+│   ├── plugin-dev-guide.md                 # Plugin development guide
+│   └── user-manual/                        # End-user manual
+│       ├── README.md                       # Manual overview
+│       ├── getting-started.md              # First-time setup
+│       ├── daily-operations.md             # Day-to-day POS usage
+│       ├── reports.md                      # Running & exporting reports
+│       └── screenshots/                    # Manual screenshots
+│
+├── server/                                 # Backend (Node.js + Express)
+│   ├── package.json                        # Server dependencies
+│   ├── server.js                           # Entry point — starts Express server
+│   ├── .env.example                        # Environment variable template
+│   │
+│   ├── config/                             # Configuration
+│   │   ├── index.js                        # Config loader (reads .env + defaults)
+│   │   ├── database.js                     # SQLite connection config
+│   │   └── printer.js                      # Printer default settings
+│   │
+│   ├── db/                                 # Database layer
+│   │   ├── index.js                        # Database connection (better-sqlite3)
+│   │   ├── migrate.js                      # Migration runner
+│   │   └── migrations/                     # Versioned SQL migration files
+│   │       ├── 001_initial_schema.sql      # Tables, indexes, foreign keys
+│   │       ├── 002_seed_data.sql           # Default data (roles, settings)
+│   │       └── 003_sample_data.sql         # Sample data for development
+│   │
+│   ├── middleware/                          # Express middleware
+│   │   ├── auth.js                         # JWT authentication middleware
+│   │   ├── rbac.js                         # Role-based access control
+│   │   ├── errorHandler.js                 # Global error handler
+│   │   ├── requestLogger.js                # Request logging (audit trail)
+│   │   └── validator.js                    # Request validation (Joi/Zod)
+│   │
+│   ├── routes/                             # API route definitions
+│   │   ├── index.js                        # Route aggregator
+│   │   ├── auth.routes.js                  # POST /api/auth/login, etc.
+│   │   ├── products.routes.js              # CRUD /api/products
+│   │   ├── categories.routes.js            # CRUD /api/categories
+│   │   ├── transactions.routes.js          # /api/transactions
+│   │   ├── payments.routes.js              # /api/payments
+│   │   ├── customers.routes.js             # CRUD /api/customers
+│   │   ├── printers.routes.js              # /api/printers
+│   │   ├── templates.routes.js             # /api/templates
+│   │   ├── plugins.routes.js               # /api/plugins
+│   │   ├── reports.routes.js               # /api/reports
+│   │   └── settings.routes.js              # /api/settings
+│   │
+│   ├── controllers/                        # Request handlers
+│   │   ├── auth.controller.js              # Login, logout, verify, change PIN
+│   │   ├── products.controller.js          # Product CRUD logic
+│   │   ├── categories.controller.js        # Category CRUD logic
+│   │   ├── transactions.controller.js      # Transaction processing
+│   │   ├── payments.controller.js          # Payment processing
+│   │   ├── customers.controller.js         # Customer management
+│   │   ├── printers.controller.js          # Printer management
+│   │   ├── templates.controller.js         # Template management
+│   │   ├── plugins.controller.js           # Plugin management
+│   │   ├── reports.controller.js           # Report generation
+│   │   └── settings.controller.js          # Settings management
+│   │
+│   ├── models/                             # Data access layer (SQLite queries)
+│   │   ├── User.js                         # User/auth queries
+│   │   ├── Product.js                      # Product queries
+│   │   ├── Category.js                     # Category queries
+│   │   ├── Transaction.js                  # Transaction queries
+│   │   ├── Payment.js                      # Payment queries
+│   │   ├── Customer.js                     # Customer queries
+│   │   ├── PrintTemplate.js                # Template queries
+│   │   ├── PrinterJob.js                   # Print job queries
+│   │   ├── Plugin.js                       # Plugin queries
+│   │   └── Setting.js                      # Settings queries
+│   │
+│   ├── services/                           # Business logic services
+│   │   ├── authService.js                  # PIN hashing, JWT generation
+│   │   ├── cartService.js                  # Cart calculations (tax, discount)
+│   │   ├── receiptFormatter.js             # Transaction → receipt data
+│   │   ├── templateEngine.js               # Template variable substitution
+│   │   ├── printQueue.js                   # Print job queuing & retry
+│   │   ├── reportService.js               # Report data aggregation
+│   │   ├── backupService.js                # Database backup/restore
+│   │   ├── csvImporter.js                  # CSV product import
+│   │   ├── csvExporter.js                  # Report CSV export
+│   │   └── auditLog.js                     # Audit trail logging
+│   │
+│   ├── plugins/                            # Plugin system core
+│   │   ├── loader.js                       # Plugin discovery & loading
+│   │   ├── hooks.js                        # Plugin hook/event system
+│   │   ├── registry.js                     # Active plugin registry
+│   │   └── validator.js                    # Plugin manifest validation
+│   │
+│   └── utils/                              # Utility functions
+│       ├── constants.js                    # App-wide constants
+│       ├── errors.js                       # Custom error classes
+│       ├── helpers.js                      # General helpers
+│       ├── sequenceGenerator.js            # Transaction number generator
+│       └── dateUtils.js                    # Date formatting (PH format)
+│
+├── client/                                 # Frontend (React + Vite PWA)
+│   ├── package.json                        # Client dependencies
+│   ├── vite.config.js                      # Vite configuration + PWA plugin
+│   ├── index.html                          # HTML entry point
+│   ├── manifest.json                       # PWA manifest
+│   │
+│   ├── public/                             # Static assets
+│   │   ├── favicon.ico                     # App icon
+│   │   ├── logo-192.png                    # PWA icon 192×192
+│   │   ├── logo-512.png                    # PWA icon 512×512
+│   │   └── offline.html                    # Offline fallback page
+│   │
+│   ├── src/                                # React source code
+│   │   ├── main.jsx                        # React entry point
+│   │   ├── App.jsx                         # Root component + router
+│   │   ├── sw-register.js                  # Service worker registration
+│   │   │
+│   │   ├── api/                            # API client layer
+│   │   │   ├── client.js                   # Axios/fetch wrapper with auth headers
+│   │   │   ├── auth.api.js                 # Auth API calls
+│   │   │   ├── products.api.js             # Product API calls
+│   │   │   ├── transactions.api.js         # Transaction API calls
+│   │   │   ├── customers.api.js            # Customer API calls
+│   │   │   ├── printers.api.js             # Printer API calls
+│   │   │   ├── reports.api.js              # Report API calls
+│   │   │   └── settings.api.js             # Settings API calls
+│   │   │
+│   │   ├── components/                     # Reusable UI components
+│   │   │   ├── common/                     # Generic components
+│   │   │   │   ├── Button.jsx              # Styled button
+│   │   │   │   ├── Modal.jsx               # Modal dialog
+│   │   │   │   ├── Table.jsx               # Data table
+│   │   │   │   ├── SearchInput.jsx         # Search with debounce
+│   │   │   │   ├── LoadingSpinner.jsx       # Loading indicator
+│   │   │   │   ├── Toast.jsx               # Toast notifications
+│   │   │   │   ├── ConfirmDialog.jsx       # Confirmation dialog
+│   │   │   │   ├── PinInput.jsx            # PIN entry component
+│   │   │   │   └── LanguageSwitcher.jsx    # Filipino/English toggle
+│   │   │   │
+│   │   │   ├── pos/                        # POS-specific components
+│   │   │   │   ├── ProductGrid.jsx         # Product selection grid
+│   │   │   │   ├── ProductCard.jsx         # Single product card
+│   │   │   │   ├── Cart.jsx               # Cart sidebar
+│   │   │   │   ├── CartItem.jsx            # Single cart item row
+│   │   │   │   ├── CheckoutDialog.jsx      # Payment modal
+│   │   │   │   ├── PaymentInput.jsx        # Cash/GCash/Split payment
+│   │   │   │   ├── CategoryTabs.jsx        # Category filter tabs
+│   │   │   │   ├── DiscountInput.jsx       # Discount entry (% or fixed)
+│   │   │   │   ├── ParkedCarts.jsx         # Parked/held carts list
+│   │   │   │   └── ReceiptPreview.jsx      # Digital receipt preview
+│   │   │   │
+│   │   │   ├── reports/                    # Report components
+│   │   │   │   ├── DailySummary.jsx        # Daily sales overview
+│   │   │   │   ├── SalesByProduct.jsx      # Product sales report
+│   │   │   │   ├── ZReport.jsx             # End-of-day Z-report
+│   │   │   │   └── ExportButton.jsx        # CSV/PDF export
+│   │   │   │
+│   │   │   └── admin/                      # Admin components
+│   │   │       ├── ProductForm.jsx         # Add/edit product form
+│   │   │       ├── CategoryManager.jsx     # Category tree manager
+│   │   │       ├── CustomerForm.jsx        # Add/edit customer form
+│   │   │       ├── UserManager.jsx         # User/role management
+│   │   │       ├── PrinterSetup.jsx        # Printer configuration
+│   │   │       ├── TemplateEditor.jsx      # Receipt template editor
+│   │   │       ├── PluginManager.jsx       # Plugin activate/deactivate
+│   │   │       └── SettingsPanel.jsx       # Business settings form
+│   │   │
+│   │   ├── pages/                          # Page-level components (routes)
+│   │   │   ├── Login.jsx                   # PIN login page
+│   │   │   ├── POS.jsx                     # Main POS terminal page
+│   │   │   ├── Products.jsx                # Product management page
+│   │   │   ├── Customers.jsx               # Customer management page
+│   │   │   ├── Reports.jsx                 # Reports dashboard page
+│   │   │   ├── Settings.jsx                # Settings page
+│   │   │   ├── Admin.jsx                   # Admin panel page
+│   │   │   └── NotFound.jsx               # 404 page
+│   │   │
+│   │   ├── context/                        # React Context providers
+│   │   │   ├── AuthContext.jsx             # Authentication state
+│   │   │   ├── CartContext.jsx             # Cart state management
+│   │   │   ├── PluginContext.jsx           # Active plugin state
+│   │   │   └── SettingsContext.jsx         # App settings state
+│   │   │
+│   │   ├── hooks/                          # Custom React hooks
+│   │   │   ├── useAuth.js                  # Auth hook (login, logout, user)
+│   │   │   ├── useCart.js                  # Cart operations hook
+│   │   │   ├── useKeyboard.js              # Keyboard shortcut hook
+│   │   │   ├── useOffline.js               # Online/offline detection
+│   │   │   └── usePrinter.js              # Printer status hook
+│   │   │
+│   │   ├── i18n/                           # Internationalization
+│   │   │   ├── index.js                    # i18next configuration
+│   │   │   ├── en.json                     # English translations
+│   │   │   └── fil.json                    # Filipino (Tagalog) translations
+│   │   │
+│   │   ├── styles/                         # CSS / styling
+│   │   │   ├── globals.css                 # Global styles, CSS variables
+│   │   │   ├── pos.css                     # POS terminal styles
+│   │   │   ├── admin.css                   # Admin panel styles
+│   │   │   └── print.css                   # Print-specific styles
+│   │   │
+│   │   └── utils/                          # Frontend utilities
+│   │       ├── formatCurrency.js           # ₱ formatting
+│   │       ├── formatDate.js               # Date formatting (PH)
+│   │       ├── validators.js               # Form validation helpers
+│   │       └── offlineQueue.js             # Offline API request queue
+│   │
+│   └── tests/                              # Frontend tests
+│       ├── components/                     # Component tests
+│       │   ├── Cart.test.jsx               # Cart component tests
+│       │   ├── CheckoutDialog.test.jsx     # Checkout tests
+│       │   └── ProductGrid.test.jsx        # Product grid tests
+│       └── setup.js                        # Test setup (jsdom, mocks)
+│
+├── printer-drivers/                        # Printer abstraction layer
+│   ├── index.js                            # Driver exports
+│   ├── PrinterDriver.js                    # Abstract interface (base class)
+│   ├── ThermalPrinter.js                   # ESC/POS thermal printer driver
+│   ├── ImpactPrinter.js                    # Impact/dot-matrix printer driver
+│   ├── ConsolePrinter.js                   # Console output (development)
+│   ├── detect.js                           # Printer auto-detection utility
+│   ├── constants.js                        # ESC/POS command constants
+│   └── tests/                              # Printer driver tests
+│       ├── ThermalPrinter.test.js          # Thermal printer tests
+│       ├── ImpactPrinter.test.js           # Impact printer tests
+│       └── mocks/                          # Mock printer devices
+│           └── MockUSBDevice.js            # Simulated USB printer
+│
+├── plugins/                                # Business-type plugins
+│   ├── README.md                           # Plugin development guide
+│   │
+│   ├── waterstation/                       # Water Refilling Station plugin
+│   │   ├── plugin.json                     # Plugin manifest
+│   │   ├── index.js                        # Plugin entry point
+│   │   ├── routes.js                       # Custom API routes
+│   │   ├── models/                         # Plugin data models
+│   │   │   ├── Container.js                # Container tracking model
+│   │   │   └── Delivery.js                 # Delivery order model
+│   │   ├── services/                       # Plugin business logic
+│   │   │   ├── containerService.js         # Deposit/return logic
+│   │   │   └── deliveryService.js          # Delivery management
+│   │   ├── components/                     # React UI components
+│   │   │   ├── ContainerTracker.jsx        # Container deposit UI
+│   │   │   ├── DeliveryBoard.jsx           # Delivery status board
+│   │   │   └── WaterDashboard.jsx          # Water station dashboard
+│   │   ├── templates/                      # Custom receipt templates
+│   │   │   ├── water-receipt.json          # Water sale receipt
+│   │   │   └── delivery-receipt.json       # Delivery receipt
+│   │   ├── migrations/                     # Plugin-specific DB migrations
+│   │   │   └── 001_water_tables.sql        # Container & delivery tables
+│   │   └── i18n/                           # Plugin translations
+│   │       ├── en.json                     # English
+│   │       └── fil.json                    # Filipino
+│   │
+│   ├── laundry/                            # Laundry Shop plugin
+│   │   ├── plugin.json                     # Plugin manifest
+│   │   ├── index.js                        # Plugin entry point
+│   │   ├── routes.js                       # Custom API routes
+│   │   ├── models/                         # Plugin data models
+│   │   │   ├── JobOrder.js                 # Job order model
+│   │   │   ├── ServiceType.js              # Service type model
+│   │   │   └── Machine.js                  # Machine tracking model
+│   │   ├── services/                       # Plugin business logic
+│   │   │   ├── jobOrderService.js          # Job order lifecycle
+│   │   │   └── claimStubService.js         # Claim stub generation
+│   │   ├── components/                     # React UI components
+│   │   │   ├── JobOrderForm.jsx            # New job order form
+│   │   │   ├── StatusBoard.jsx             # Kanban status board
+│   │   │   ├── ClaimStubPreview.jsx        # Claim stub preview
+│   │   │   └── LaundryDashboard.jsx        # Laundry dashboard
+│   │   ├── templates/                      # Custom receipt templates
+│   │   │   ├── claim-stub.json             # Claim stub template
+│   │   │   └── laundry-receipt.json        # Laundry receipt
+│   │   ├── migrations/                     # Plugin-specific DB migrations
+│   │   │   └── 001_laundry_tables.sql      # Job order & service tables
+│   │   └── i18n/                           # Plugin translations
+│   │       ├── en.json                     # English
+│   │       └── fil.json                    # Filipino
+│   │
+│   └── motorepair/                         # Motorcycle Repair Shop plugin
+│       ├── plugin.json                     # Plugin manifest
+│       ├── index.js                        # Plugin entry point
+│       ├── routes.js                       # Custom API routes
+│       ├── models/                         # Plugin data models
+│       │   ├── JobOrder.js                 # Repair job order model
+│       │   ├── Part.js                     # Parts inventory model
+│       │   └── Vehicle.js                  # Vehicle information model
+│       ├── services/                       # Plugin business logic
+│       │   ├── jobOrderService.js          # Repair job lifecycle
+│       │   ├── inventoryService.js         # Parts stock management
+│       │   └── estimateService.js          # Quotation generation
+│       ├── components/                     # React UI components
+│       │   ├── RepairJobForm.jsx           # New repair job form
+│       │   ├── PartsSelector.jsx           # Parts selection with stock
+│       │   ├── LaborEntry.jsx              # Labor items entry
+│       │   ├── VehicleHistory.jsx          # Vehicle service history
+│       │   └── RepairDashboard.jsx         # Motor shop dashboard
+│       ├── templates/                      # Custom receipt templates
+│       │   ├── repair-receipt.json         # Itemized repair receipt
+│       │   └── quotation.json             # Quotation/estimate template
+│       ├── migrations/                     # Plugin-specific DB migrations
+│       │   └── 001_motor_tables.sql        # Job order, parts, vehicle tables
+│       └── i18n/                           # Plugin translations
+│           ├── en.json                     # English
+│           └── fil.json                    # Filipino
+│
+├── scripts/                                # Build & utility scripts
+│   ├── build.js                            # Production build script
+│   ├── seed.js                             # Database seed data loader
+│   ├── backup.js                           # Database backup utility
+│   ├── restore.js                          # Database restore utility
+│   ├── reset-db.js                         # Reset database (dev only)
+│   ├── create-installer.js                 # Windows installer builder
+│   └── migrate.js                          # Run database migrations
+│
+├── e2e-tests/                              # End-to-end tests (Playwright)
+│   ├── playwright.config.js                # Playwright configuration
+│   ├── fixtures/                           # Test fixtures
+│   │   ├── test-data.js                    # Sample test data
+│   │   └── test-db.sql                     # Pre-loaded test database
+│   ├── tests/                              # Test specifications
+│   │   ├── auth.spec.js                    # Login/logout tests
+│   │   ├── pos-flow.spec.js                # Complete sale flow test
+│   │   ├── products.spec.js                # Product management tests
+│   │   ├── reports.spec.js                 # Report generation tests
+│   │   ├── printer.spec.js                 # Printer integration tests
+│   │   ├── waterstation.spec.js            # Water station plugin tests
+│   │   ├── laundry.spec.js                 # Laundry plugin tests
+│   │   └── motorepair.spec.js              # Motor repair plugin tests
+│   └── helpers/                            # Test helpers
+│       ├── setup.js                        # Test environment setup
+│       └── assertions.js                   # Custom assertions
+│
+├── templates/                              # Default receipt/print templates
+│   ├── default-receipt.json                # Standard sales receipt
+│   ├── z-report.json                       # Z-report (end of day)
+│   └── barcode-label.json                  # Barcode label template
+│
+├── data/                                   # Runtime data directory
+│   ├── pos.db                              # SQLite database (created at runtime)
+│   └── backups/                            # Automatic backup directory
+│       └── .gitkeep                        # Keep directory in git
+│
+├── .env.example                            # Environment variables template
+├── .eslintrc.json                          # ESLint configuration
+├── .prettierrc                             # Prettier configuration
+├── .editorconfig                           # Editor configuration
+├── .gitignore                              # Git ignore rules
+├── package.json                            # Root package.json (workspaces)
+├── README.md                               # Project overview & quick start
+├── CHANGELOG.md                            # Version history
+└── LICENSE                                 # License file

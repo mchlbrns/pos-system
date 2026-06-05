@@ -1,0 +1,158 @@
+-- Database schema for SQLite - Universal POS System
+-- Features: support JSON plugin fields, TIN, VAT, printer queue, business profiles.
+
+CREATE TABLE IF NOT EXISTS businesses (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  name          TEXT    NOT NULL,
+  type          TEXT    NOT NULL CHECK (type IN ('waterstation', 'laundry', 'motorepair', 'general')),
+  address       TEXT,
+  phone         TEXT,
+  tin           TEXT,
+  logo_url      TEXT,
+  settings      TEXT    DEFAULT '{}',  -- JSON
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id   INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  username      TEXT    NOT NULL UNIQUE,
+  password_hash TEXT    NOT NULL,
+  role          TEXT    NOT NULL DEFAULT 'cashier' CHECK (role IN ('admin', 'cashier', 'manager')),
+  full_name     TEXT    NOT NULL,
+  is_active     INTEGER NOT NULL DEFAULT 1,
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id   INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  name          TEXT    NOT NULL,
+  description   TEXT,
+  sort_order    INTEGER NOT NULL DEFAULT 0,
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id       INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  category_id       INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+  name              TEXT    NOT NULL,
+  description       TEXT,
+  sku               TEXT,
+  barcode           TEXT,
+  price             REAL    NOT NULL DEFAULT 0,
+  cost              REAL    NOT NULL DEFAULT 0,
+  quantity          REAL    NOT NULL DEFAULT 0,
+  unit              TEXT    NOT NULL DEFAULT 'pc',
+  is_active         INTEGER NOT NULL DEFAULT 1,
+  plugin_attributes TEXT    DEFAULT '{}',  -- JSON
+  image_url         TEXT,
+  created_at        TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at        TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id     INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  name            TEXT    NOT NULL,
+  phone           TEXT,
+  email           TEXT,
+  address         TEXT,
+  notes           TEXT,
+  loyalty_points  REAL    NOT NULL DEFAULT 0,
+  created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at      TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+  id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id         INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  user_id             INTEGER NOT NULL REFERENCES users(id),
+  customer_id         INTEGER REFERENCES customers(id) ON DELETE SET NULL,
+  transaction_number  TEXT    NOT NULL UNIQUE,
+  subtotal            REAL    NOT NULL DEFAULT 0,
+  tax_amount          REAL    NOT NULL DEFAULT 0,
+  discount_amount     REAL    NOT NULL DEFAULT 0,
+  total               REAL    NOT NULL DEFAULT 0,
+  status              TEXT    NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'voided', 'refunded')),
+  payment_method      TEXT,
+  notes               TEXT,
+  plugin_attributes   TEXT    DEFAULT '{}',  -- JSON
+  created_at          TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at          TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS line_items (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  transaction_id    INTEGER NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
+  product_id        INTEGER REFERENCES products(id) ON DELETE SET NULL,
+  product_name      TEXT    NOT NULL,
+  quantity          REAL    NOT NULL DEFAULT 1,
+  unit_price        REAL    NOT NULL DEFAULT 0,
+  discount          REAL    NOT NULL DEFAULT 0,
+  subtotal          REAL    NOT NULL DEFAULT 0,
+  plugin_attributes TEXT    DEFAULT '{}',  -- JSON
+  created_at        TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at        TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  transaction_id    INTEGER NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
+  method            TEXT    NOT NULL CHECK (method IN ('cash', 'gcash', 'maya', 'card', 'bank_transfer')),
+  amount            REAL    NOT NULL DEFAULT 0,
+  reference_number  TEXT,
+  change_amount     REAL    NOT NULL DEFAULT 0,
+  created_at        TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at        TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS print_templates (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id   INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  name          TEXT    NOT NULL,
+  type          TEXT    NOT NULL CHECK (type IN ('receipt', 'kitchen', 'label')),
+  template      TEXT    NOT NULL,
+  is_default    INTEGER NOT NULL DEFAULT 0,
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS printer_jobs (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id   INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  template_id   INTEGER REFERENCES print_templates(id) ON DELETE SET NULL,
+  transaction_id INTEGER REFERENCES transactions(id) ON DELETE SET NULL,
+  printer_name  TEXT,
+  status        TEXT    NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'printing', 'completed', 'failed')),
+  payload       TEXT    DEFAULT '{}',  -- JSON
+  attempts      INTEGER NOT NULL DEFAULT 0,
+  error_message TEXT,
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS plugins (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  name          TEXT    NOT NULL UNIQUE,
+  type          TEXT    NOT NULL,
+  version       TEXT    NOT NULL DEFAULT '1.0.0',
+  is_active     INTEGER NOT NULL DEFAULT 1,
+  config        TEXT    DEFAULT '{}',  -- JSON
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_id   INTEGER NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+  key           TEXT    NOT NULL,
+  value         TEXT,
+  created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(business_id, key)
+);

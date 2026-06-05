@@ -1,0 +1,33 @@
+{
+  "name": "pos-printer-drivers",
+  "version": "1.0.0",
+  "description": "Universal POS Printer Driver Subsystem — supports ESC/POS thermal printers, impact/dot-matrix printers, USB/Network/Serial connections. Philippine-locale receipts with BIR-required fields.",
+  "main": "src/PrinterManager.js",
+  "scripts": {
+    "demo": "node demo/print_test.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "pos",
+    "printer",
+    "escpos",
+    "thermal",
+    "receipt",
+    "philippines",
+    "cash-drawer"
+  ],
+  "author": "POS System Team",
+  "license": "MIT",
+  "dependencies": {
+    "escpos": "^3.0.0-alpha.6",
+    "escpos-usb": "^3.0.0-alpha.4",
+    "escpos-network": "^3.0.0-alpha.5",
+    "escpos-serialport": "^3.0.0-alpha.4",
+    "usb": "^2.11.0",
+    "serialport": "^12.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

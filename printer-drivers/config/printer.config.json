@@ -1,0 +1,89 @@
+{
+  "defaultPrinter": null,
+  "printers": [
+    {
+      "id": "receipt-printer",
+      "name": "Receipt Printer",
+      "type": "thermal",
+      "connection": "usb",
+      "address": null,
+      "port": null,
+      "vendorId": null,
+      "productId": null,
+      "baudRate": 9600,
+      "paperWidth": 80,
+      "encoding": "GB18030",
+      "enabled": true,
+      "role": "receipt"
+    },
+    {
+      "id": "kitchen-printer",
+      "name": "Kitchen Printer",
+      "type": "thermal",
+      "connection": "network",
+      "address": "192.168.1.100",
+      "port": 9100,
+      "vendorId": null,
+      "productId": null,
+      "baudRate": null,
+      "paperWidth": 80,
+      "encoding": "GB18030",
+      "enabled": false,
+      "role": "kitchen"
+    },
+    {
+      "id": "report-printer",
+      "name": "Report Printer",
+      "type": "impact",
+      "connection": "usb",
+      "address": null,
+      "port": null,
+      "vendorId": null,
+      "productId": null,
+      "baudRate": 9600,
+      "paperWidth": 80,
+      "encoding": "ascii",
+      "enabled": false,
+      "role": "report"
+    }
+  ],
+  "business": {
+    "name": "My POS Business",
+    "address": "123 Main Street, Barangay Centro",
+    "city": "Manila",
+    "province": "Metro Manila",
+    "zip": "1000",
+    "tin": "000-000-000-000",
+    "vatRegistered": true,
+    "permitNo": "BP-2026-001234",
+    "accreditationNo": "",
+    "ptuNo": "",
+    "phone": "(02) 8123-4567",
+    "email": "info@mybusiness.com",
+    "website": ""
+  },
+  "receipt": {
+    "headerLines": [],
+    "footerMessage": "Thank you for your patronage!",
+    "returnPolicy": "Items may be returned within 7 days with official receipt.",
+    "showQRCode": false,
+    "qrCodeBaseUrl": "https://receipt.mybusiness.com/verify/",
+    "currency": "₱",
+    "vatRate": 0.12,
+    "dateFormat": "MM/DD/YYYY",
+    "timeFormat": "hh:mm:ss A"
+  },
+  "logging": {
+    "enabled": true,
+    "logDirectory": "./logs",
+    "logLevel": "info"
+  },
+  "failover": {
+    "enabled": true,
+    "maxRetries": 3,
+    "retryDelayMs": 1000,
+    "fallbackToConsole": true,
+    "fallbackToFile": true,
+    "fallbackDirectory": "./print-fallback"
+  }
+}

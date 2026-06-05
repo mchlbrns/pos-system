@@ -1,0 +1,27 @@
+{
+  "name": "pos-system-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for Universal POS System using Playwright",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:checkout": "npx playwright test tests/checkout.spec.js",
+    "test:plugin": "npx playwright test tests/plugin-switch.spec.js",
+    "test:offline": "npx playwright test tests/offline-sync.spec.js",
+    "test:products": "npx playwright test tests/product-management.spec.js",
+    "test:report": "npx playwright show-report",
+    "install:browsers": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  },
+  "keywords": [
+    "pos",
+    "e2e",
+    "playwright",
+    "testing"
+  ],
+  "author": "Universal POS System",
+  "license": "UNLICENSED"
+}
