@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "seed": "node database/seeds.js"
+    "seed": "node database/seeds.js",
+    "test": "jest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -19,5 +20,8 @@
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
   }
 }
