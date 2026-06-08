@@ -16,6 +16,33 @@ try {
 
 class PrinterWizard {
   /**
+   * Validates if an IP address is a safe, private IPv4 address.
+   * Prevents SSRF attacks to localhost, cloud metadata, and public internet IPs.
+   */
+  isSafePrinterIp(ip) {
+    if (!net.isIPv4(ip)) return false;
+
+    const parts = ip.split('.').map(Number);
+
+    // Prevent localhost/loopback (127.0.0.0/8)
+    if (parts[0] === 127) return false;
+
+    // Prevent link-local (cloud metadata, etc) (169.254.0.0/16)
+    if (parts[0] === 169 && parts[1] === 254) return false;
+
+    // Allow private subnets only
+    // 10.0.0.0/8
+    if (parts[0] === 10) return true;
+    // 172.16.0.0/12
+    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+    // 192.168.0.0/16
+    if (parts[0] === 192 && parts[1] === 168) return true;
+
+    // Reject all other IP addresses
+    return false;
+  }
+
+  /**
    * Scan for USB, serial, and network printers.
    */
   async detectPrinters() {
@@ -262,6 +289,12 @@ class PrinterWizard {
       // Network ESC/POS print
       const [ip, portStr] = prAddress.split(':');
       const port = parseInt(portStr) || 9100;
+
+      if (!this.isSafePrinterIp(ip)) {
+        logger.error(`Security Warning: Attempted network print to unsafe/invalid IP address: ${ip}`);
+        return { success: false, message: 'Invalid or forbidden printer IP address' };
+      }
+
       logger.info(`Sending Network Print RAW command stream to ${ip}:${port}`);
       
       return new Promise((resolve) => {
