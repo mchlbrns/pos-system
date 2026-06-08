@@ -257,3 +257,139 @@
          Please come again.
 ========================================
 [--- END OF PRINT JOB ---]
+
+[--- START OF PRINT JOB ---]
+========================================
+           AquaPure Water Station
+         123 Rizal Ave, Quezon City
+         Tel: 09171234567
+     TIN: 123-456-789-000
+========================================
+ Transaction #: TXN-20260608-0001
+ Date: 2026-06-08 03:18:34
+ Cashier: System Admin
+ Customer: Walk-in Customer
+----------------------------------------
+ ITEM              QTY   PRICE   AMOUNT
+----------------------------------------
+
+ Purified Water Refill (5 gal)
+                   1 x 25.00  22.32
+
+----------------------------------------
+ Subtotal:                   22.32
+ VAT (12%):                  2.68
+ Discount:                  -0.00
+----------------------------------------
+ TOTAL:                ₱ 25.00
+----------------------------------------
+ Payment: cash
+ Amount Paid:           ₱ 100.00
+ Change:                ₱ 75.00
+========================================
+      Thank you for your purchase!
+         Please come again.
+========================================
+[--- END OF PRINT JOB ---]
+
+[--- START OF PRINT JOB ---]
+========================================
+           AquaPure Water Station
+         123 Rizal Ave, Quezon City
+         Tel: 09171234567
+     TIN: 123-456-789-000
+========================================
+ Transaction #: TXN-20260608-0002
+ Date: 2026-06-08 03:18:50
+ Cashier: System Admin
+ Customer: Walk-in Customer
+----------------------------------------
+ ITEM              QTY   PRICE   AMOUNT
+----------------------------------------
+
+ Purified Water Refill (5 gal)
+                   1 x 25.00  22.32
+
+----------------------------------------
+ Subtotal:                   22.32
+ VAT (12%):                  2.68
+ Discount:                  -0.00
+----------------------------------------
+ TOTAL:                ₱ 25.00
+----------------------------------------
+ Payment: cash
+ Amount Paid:           ₱ 100.00
+ Change:                ₱ 75.00
+========================================
+      Thank you for your purchase!
+         Please come again.
+========================================
+[--- END OF PRINT JOB ---]
+
+[--- START OF PRINT JOB ---]
+========================================
+           AquaPure Water Station
+         123 Rizal Ave, Quezon City
+         Tel: 09171234567
+     TIN: 123-456-789-000
+========================================
+ Transaction #: TXN-20260608-0003
+ Date: 2026-06-08 03:19:05
+ Cashier: System Admin
+ Customer: Walk-in Customer
+----------------------------------------
+ ITEM              QTY   PRICE   AMOUNT
+----------------------------------------
+
+ Purified Water Refill (5 gal)
+                   1 x 25.00  22.32
+
+----------------------------------------
+ Subtotal:                   22.32
+ VAT (12%):                  2.68
+ Discount:                  -0.00
+----------------------------------------
+ TOTAL:                ₱ 25.00
+----------------------------------------
+ Payment: cash
+ Amount Paid:           ₱ 100.00
+ Change:                ₱ 75.00
+========================================
+      Thank you for your purchase!
+         Please come again.
+========================================
+[--- END OF PRINT JOB ---]
+
+[--- START OF PRINT JOB ---]
+========================================
+           AquaPure Water Station
+         123 Rizal Ave, Quezon City
+         Tel: 09171234567
+     TIN: 123-456-789-000
+========================================
+ Transaction #: TXN-20260608-0004
+ Date: 2026-06-08 03:39:03
+ Cashier: System Admin
+ Customer: Walk-in Customer
+----------------------------------------
+ ITEM              QTY   PRICE   AMOUNT
+----------------------------------------
+
+ Purified Water Refill (5 gal)
+                   1 x 25.00  22.32
+
+----------------------------------------
+ Subtotal:                   22.32
+ VAT (12%):                  2.68
+ Discount:                  -0.00
+----------------------------------------
+ TOTAL:                ₱ 25.00
+----------------------------------------
+ Payment: cash
+ Amount Paid:           ₱ 100.00
+ Change:                ₱ 75.00
+========================================
+      Thank you for your purchase!
+         Please come again.
+========================================
+[--- END OF PRINT JOB ---]
