@@ -56,6 +56,12 @@ class Transaction {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
+      const updateProduct = db.prepare(`
+        UPDATE products
+        SET quantity = quantity - ?, updated_at = datetime('now')
+        WHERE id = ?
+      `);
+
       for (const item of (data.items || [])) {
         insertItem.run(
           txnId,
@@ -69,11 +75,7 @@ class Transaction {
         );
 
         if (item.product_id) {
-          db.prepare(`
-            UPDATE products
-            SET quantity = quantity - ?, updated_at = datetime('now')
-            WHERE id = ?
-          `).run(item.quantity, item.product_id);
+          updateProduct.run(item.quantity, item.product_id);
         }
       }
 
@@ -200,12 +202,15 @@ class Transaction {
       if (txn.status === 'voided') return Transaction.findById(id);
 
       const items = db.prepare('SELECT * FROM line_items WHERE transaction_id = ?').all(id);
+
+      const updateProduct = db.prepare(`
+        UPDATE products SET quantity = quantity + ?, updated_at = datetime('now')
+        WHERE id = ?
+      `);
+
       for (const item of items) {
         if (item.product_id) {
-          db.prepare(`
-            UPDATE products SET quantity = quantity + ?, updated_at = datetime('now')
-            WHERE id = ?
-          `).run(item.quantity, item.product_id);
+          updateProduct.run(item.quantity, item.product_id);
         }
       }
 
@@ -230,12 +235,15 @@ class Transaction {
       if (txn.status !== 'completed') return null;
 
       const items = db.prepare('SELECT * FROM line_items WHERE transaction_id = ?').all(id);
+
+      const updateProduct = db.prepare(`
+        UPDATE products SET quantity = quantity + ?, updated_at = datetime('now')
+        WHERE id = ?
+      `);
+
       for (const item of items) {
         if (item.product_id) {
-          db.prepare(`
-            UPDATE products SET quantity = quantity + ?, updated_at = datetime('now')
-            WHERE id = ?
-          `).run(item.quantity, item.product_id);
+          updateProduct.run(item.quantity, item.product_id);
         }
       }
 
