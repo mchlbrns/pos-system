@@ -51,3 +51,5 @@ Thumbs.db
 pos_v2.zip
 *.zip
 
+coverage/
+pnpm-lock.yaml
