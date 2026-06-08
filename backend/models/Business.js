@@ -92,6 +92,25 @@ class Business {
     return result.changes > 0;
   }
 
+  static setSettings(businessId, settingsObject) {
+    const db = getDatabase();
+    const insert = db.prepare(`
+      INSERT INTO settings (business_id, key, value)
+      VALUES (?, ?, ?)
+      ON CONFLICT(business_id, key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')
+    `);
+
+    const updateMany = db.transaction((id, settings) => {
+      let count = 0;
+      for (const [key, val] of Object.entries(settings)) {
+        count += insert.run(id, key, String(val)).changes;
+      }
+      return count;
+    });
+
+    return updateMany(businessId, settingsObject) > 0;
+  }
+
   static deleteSetting(businessId, key) {
     const db = getDatabase();
     return db.prepare('DELETE FROM settings WHERE business_id = ? AND key = ?').run(businessId, key).changes > 0;

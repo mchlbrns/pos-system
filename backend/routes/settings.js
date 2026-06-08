@@ -97,9 +97,7 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   try {
     const settings = req.body;
-    for (const [key, val] of Object.entries(settings)) {
-      Business.setSetting(req.user.business_id, key, String(val));
-    }
+    Business.setSettings(req.user.business_id, settings);
     res.json({ success: true, data: { message: 'Settings saved successfully' } });
   } catch (err) {
     next(err);
