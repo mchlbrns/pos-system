@@ -14,23 +14,23 @@ try {
 
 const pendingPrintsPath = path.resolve(__dirname, '../data/pending_prints.json');
 
-function getPendingPrints() {
+async function getPendingPrints() {
   try {
-    if (fs.existsSync(pendingPrintsPath)) {
-      const data = fs.readFileSync(pendingPrintsPath, 'utf8');
-      return JSON.parse(data);
-    }
+    const data = await fs.promises.readFile(pendingPrintsPath, 'utf8');
+    return JSON.parse(data);
   } catch (e) {
-    logger.error('Failed to read pending_prints.json', e);
+    if (e.code !== 'ENOENT') {
+      logger.error('Failed to read pending_prints.json', e);
+    }
   }
   return [];
 }
 
-function savePendingPrints(jobs) {
+async function savePendingPrints(jobs) {
   try {
     const dir = path.dirname(pendingPrintsPath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(pendingPrintsPath, JSON.stringify(jobs, null, 2), 'utf8');
+    await fs.promises.mkdir(dir, { recursive: true });
+    await fs.promises.writeFile(pendingPrintsPath, JSON.stringify(jobs, null, 2), 'utf8');
   } catch (e) {
     logger.error('Failed to write pending_prints.json', e);
   }
@@ -61,7 +61,7 @@ class PrinterQueue {
 
     try {
       // 1. First retry any pending prints in pending_prints.json
-      let pendingJobs = getPendingPrints();
+      let pendingJobs = await getPendingPrints();
       if (pendingJobs.length > 0) {
         logger.info(`Retrying ${pendingJobs.length} pending print jobs from disk...`);
         const remainingJobs = [];
@@ -73,7 +73,7 @@ class PrinterQueue {
           }
         }
         
-        savePendingPrints(remainingJobs);
+        await savePendingPrints(remainingJobs);
       }
 
       // 2. Process next queued job from SQLite
@@ -89,9 +89,9 @@ class PrinterQueue {
           logger.warn(`Job ${job.id} failed/printer offline. Saving to offline queue.`);
           PrinterJob.updateStatus(job.id, 'failed', 'Printer offline. Saved to pending_prints.json');
           
-          const currentPending = getPendingPrints();
+          const currentPending = await getPendingPrints();
           currentPending.push(job);
-          savePendingPrints(currentPending);
+          await savePendingPrints(currentPending);
         }
       }
     } catch (err) {
@@ -109,7 +109,7 @@ class PrinterQueue {
       } else {
         // Fallback to virtual printer mock text file
         const logDir = path.resolve(__dirname, '../data');
-        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+        await fs.promises.mkdir(logDir, { recursive: true });
         
         const logFile = path.join(logDir, 'virtual_printer.txt');
         const logData = `
@@ -121,7 +121,7 @@ PAYLOAD:
 ${JSON.stringify(job.payload, null, 2)}
 ===================================================
 `;
-        fs.appendFileSync(logFile, logData);
+        await fs.promises.appendFile(logFile, logData);
         logger.info(`Mock printed job ${job.id} to backend/data/virtual_printer.txt`);
         return true;
       }
