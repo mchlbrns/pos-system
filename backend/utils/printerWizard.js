@@ -224,12 +224,14 @@ class PrinterWizard {
   async printReceipt(job) {
     const businessId = job.business_id;
     
-    // Get printer configuration
-    let prName = Business.getSetting(businessId, 'printer_name');
-    let prAddress = Business.getSetting(businessId, 'printer_address') || 'virtual_printer.txt';
-    let prType = Business.getSetting(businessId, 'printer_type') || 'thermal'; // thermal or impact
-    
+    // Fetch business and all its settings in a single DB query
     const biz = Business.findById(businessId);
+    const settings = biz ? (biz.settings || {}) : {};
+
+    // Get printer configuration from the cached settings
+    let prName = settings.printer_name;
+    let prAddress = settings.printer_address || 'virtual_printer.txt';
+    let prType = settings.printer_type || 'thermal'; // thermal or impact
     
     // Format payload using default template if it exists
     let template = `
