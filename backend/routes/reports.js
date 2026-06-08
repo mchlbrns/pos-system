@@ -30,7 +30,7 @@ router.get('/daily', (req, res, next) => {
     `).all(req.user.business_id, date);
 
     const topProducts = db.prepare(`
-      SELECT product_name, SUM(quantity) as quantity, SUM(subtotal) as revenue
+      SELECT product_name, SUM(quantity) as quantity, SUM(l.subtotal) as revenue
       FROM line_items l
       JOIN transactions t ON l.transaction_id = t.id
       WHERE t.business_id = ? AND date(t.created_at) = date(?) AND t.status = 'completed'

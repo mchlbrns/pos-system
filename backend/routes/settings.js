@@ -104,7 +104,7 @@ router.post('/', (req, res, next) => {
   }
 });
 
-// Verify Admin PIN (default 1234)
+// Verify Admin PIN
 router.post('/verify-pin', (req, res, next) => {
   try {
     const { pin } = req.body;
@@ -115,7 +115,7 @@ router.post('/verify-pin', (req, res, next) => {
     // Check setting business_pin
     let savedPin = Business.getSetting(req.user.business_id, 'business_pin');
     if (!savedPin) {
-      savedPin = '1234'; // default fallback
+      return res.status(403).json({ success: false, error: 'Administrator PIN has not been set up. Please configure it in settings.' });
     }
 
     if (pin === savedPin) {
