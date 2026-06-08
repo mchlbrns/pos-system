@@ -10,6 +10,7 @@ router.get('/daily', (req, res, next) => {
     const db = getDatabase();
     const date = req.query.date || new Date().toISOString().split('T')[0];
     
+    // Summary of all transactions for the day
     const sales = db.prepare(`
       SELECT 
         COUNT(*) as total_orders,
@@ -21,21 +22,23 @@ router.get('/daily', (req, res, next) => {
       WHERE business_id = ? AND date(created_at) = date(?) AND status = 'completed'
     `).get(req.user.business_id, date);
 
+    // Grouped revenue by payment method
     const payments = db.prepare(`
-      SELECT method, SUM(amount) as total
+      SELECT p.method, SUM(p.amount) as total_payment
       FROM payments p
       JOIN transactions t ON p.transaction_id = t.id
       WHERE t.business_id = ? AND date(t.created_at) = date(?) AND t.status = 'completed'
-      GROUP BY method
+      GROUP BY p.method
     `).all(req.user.business_id, date);
 
+    // Top 5 products sold today
     const topProducts = db.prepare(`
-      SELECT product_name, SUM(quantity) as quantity, SUM(l.subtotal) as revenue
+      SELECT l.product_name, SUM(l.quantity) as total_qty, SUM(l.subtotal) as total_revenue
       FROM line_items l
       JOIN transactions t ON l.transaction_id = t.id
       WHERE t.business_id = ? AND date(t.created_at) = date(?) AND t.status = 'completed'
-      GROUP BY product_id, product_name
-      ORDER BY quantity DESC
+      GROUP BY l.product_id, l.product_name
+      ORDER BY total_qty DESC
       LIMIT 5
     `).all(req.user.business_id, date);
 
@@ -49,8 +52,15 @@ router.get('/daily', (req, res, next) => {
           discount: sales.discount || 0,
           total: sales.total || 0
         },
-        payments,
-        top_products: topProducts
+        payments: payments.map(p => ({
+          method: p.method,
+          total: p.total_payment
+        })),
+        top_products: topProducts.map(p => ({
+          product_name: p.product_name,
+          quantity: p.total_qty,
+          revenue: p.total_revenue
+        }))
       }
     });
   } catch (err) {

@@ -25,9 +25,9 @@ class Transaction {
 
   static create(data) {
     const db = getDatabase();
-    const txnNumber = Transaction.generateNumber(data.business_id);
 
     const createTxn = db.transaction(() => {
+      const txnNumber = Transaction.generateNumber(data.business_id);
       const txnResult = db.prepare(`
         INSERT INTO transactions
           (business_id, user_id, customer_id, transaction_number, subtotal,
@@ -97,7 +97,7 @@ class Transaction {
       return txnId;
     });
 
-    const txnId = createTxn();
+    const txnId = createTxn.immediate();
     return Transaction.findById(txnId);
   }
 

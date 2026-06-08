@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import ProductGrid from './components/ProductGrid';
 import Cart from './components/Cart';
 import PaymentModal from './components/PaymentModal';
+import PluginAttributesModal from './components/PluginAttributesModal';
 import PrinterSetup from './pages/PrinterSetup';
 
 // Main App Controller
@@ -245,17 +246,28 @@ function CashierPanel({ api, user, business }) {
   const [showCheckout, setShowCheckout] = useState(false);
   const [cartTotals, setCartTotals] = useState({ subtotal: 0, tax_amount: 0, discount_amount: 0, total: 0 });
 
+  // Plugin state
+  const [activePluginConfig, setActivePluginConfig] = useState(null);
+  const [showPluginModal, setShowPluginModal] = useState(false);
+  const [pendingProduct, setPendingProduct] = useState(null);
+
   // Load backend content
   const loadData = async () => {
     try {
-      const [prodRes, catRes, custRes] = await Promise.all([
+      const [prodRes, catRes, custRes, plugRes] = await Promise.all([
         api.get('/products'),
         api.get('/products/categories'),
-        api.get('/customers')
+        api.get('/customers'),
+        api.get('/plugins')
       ]);
       if (prodRes.data.success) setProducts(prodRes.data.data);
       if (catRes.data.success) setCategories(catRes.data.data);
       if (custRes.data.success) setCustomers(custRes.data.data);
+
+      if (plugRes.data.success && business) {
+        const currentPlug = plugRes.data.data.find(p => p.name === business.type);
+        if (currentPlug) setActivePluginConfig(currentPlug);
+      }
     } catch (e) {
       console.error('Failed to load cashier configurations', e);
     }
@@ -263,7 +275,7 @@ function CashierPanel({ api, user, business }) {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [business]);
 
   // Recalculate cart whenever items or discounts change
   useEffect(() => {
@@ -319,31 +331,35 @@ function CashierPanel({ api, user, business }) {
   }, [cart, discountType]);
 
   const handleAddProduct = (product) => {
-    // Check if product has custom plugin fields (Step 5)
-    // E.g. laundry: weight, service_type. Let's look up business type
-    let pluginAttributes = {};
-    
-    if (business?.type === 'laundry') {
-      const weight = prompt('Enter weight in kg:', '1.0');
-      if (weight === null) return;
-      pluginAttributes.weight = parseFloat(weight) || 1.0;
-      
-      const service = prompt('Enter service type (wash_fold / dry_clean / press):', 'wash_fold');
-      if (service === null) return;
-      pluginAttributes.service_type = service;
-    } else if (business?.type === 'waterstation') {
-      const size = prompt('Enter container size (5 gal / 1 gal):', '5 gal');
-      if (size === null) return;
-      pluginAttributes.container_size = size;
+    // If business has plugin fields, show modal instead of prompt
+    if (activePluginConfig && activePluginConfig.fields && activePluginConfig.fields.length > 0) {
+      setPendingProduct(product);
+      setShowPluginModal(true);
+      return;
     }
 
-    const existing = cart.find(item => item.id === product.id && JSON.stringify(item.plugin_attributes) === JSON.stringify(pluginAttributes));
+    // Default flow for general products
+    addToCart(product, {});
+  };
+
+  const addToCart = (product, pluginAttributes) => {
+    const existing = cart.find(item => 
+      item.id === product.id && 
+      JSON.stringify(item.plugin_attributes) === JSON.stringify(pluginAttributes)
+    );
+
     if (existing) {
       handleUpdateQty(product.id, existing.quantity + 1);
     } else {
       setCart([...cart, { ...product, quantity: 1, plugin_attributes: pluginAttributes }]);
       toast.success(`${product.name} added to cart`);
     }
+  };
+
+  const handlePluginModalConfirm = (attributes) => {
+    addToCart(pendingProduct, attributes);
+    setShowPluginModal(false);
+    setPendingProduct(null);
   };
 
   const handleUpdateQty = (id, qty) => {
@@ -453,6 +469,19 @@ function CashierPanel({ api, user, business }) {
           total={cartTotals.total}
           onClose={() => setShowCheckout(false)}
           onConfirm={handleProcessCheckout}
+        />
+      )}
+
+      {/* Plugin Attributes Modal */}
+      {showPluginModal && pendingProduct && activePluginConfig && (
+        <PluginAttributesModal
+          product={pendingProduct}
+          fields={activePluginConfig.fields}
+          onClose={() => {
+            setShowPluginModal(false);
+            setPendingProduct(null);
+          }}
+          onConfirm={handlePluginModalConfirm}
         />
       )}
     </div>

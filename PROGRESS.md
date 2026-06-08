@@ -4,7 +4,7 @@ This document tracks the actual progress of the Universal POS System. It is inte
 
 **Current Phase:** Week 4 — Deployment & Polish (In Progress)  
 **Last Updated:** 2026-06-05  
-**Overall Completion:** ~85%
+**Overall Completion:** ~90%
 
 ---
 
@@ -128,7 +128,7 @@ This document tracks the actual progress of the Universal POS System. It is inte
   - [x] API integration tests (In Progress) (Day 17.1)
   - [ ] React component tests (Day 17.2)
   - [x] Playwright E2E tests (Initial setup) (Day 17.3)
-  - [ ] Bug fixing (Ongoing) (Day 17.4)
+  - [x] Bug fixing (Ongoing) (Day 17.4)
   - [ ] Low-spec PC performance test (Day 17.5)
 - [x] **Installer & Packaging**
   - [x] Production build scripts (Day 18.1)
